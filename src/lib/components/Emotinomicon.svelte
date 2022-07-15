@@ -51,7 +51,7 @@
 </script>
 
 <div class="wrapper">
-	<label for="emotinomicon-input">Emotion</label>
+	<!-- <label for="emotinomicon-input">Emotion</label> -->
 	<input
 		id="emotionomicon-input"
 		type="text"
@@ -76,14 +76,33 @@
 
 <style>
 	.wrapper {
-		padding-top: 3rem;
+		padding-top: 10rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
 	}
 
-	input {
+	input,
+	.listbox {
+		padding: 10px;
+		margin: 10px;
+		font-family: monospace;
+		font-size: 2rem;
+		min-width: 400px;
 		border: 1px solid black;
+		border-radius: 4px;
 	}
 
 	.listbox {
-		border: 1px solid black;
+		padding: 10;
+	}
+
+	ul,
+	li {
+		list-style-type: none;
+		text-align: center;
+		margin: 0;
+		padding: 0;
 	}
 </style>
