@@ -152,13 +152,10 @@
 		--grey: #555568;
 		--highlight: #a0a08b;
 		--light: #e9efec;
-		/* --black: #0f0f1b;
-		--grey: #565a75;
-		--highlight: #c6b7be;
-		--light: #fafbf6; */
 	}
 
 	.wrapper {
+		padding: 10px;
 		color: var(--black);
 		background-color: var(--light);
 		padding-top: 10rem;
@@ -166,9 +163,6 @@
 		flex-direction: column;
 		justify-content: flex-start;
 		align-items: center;
-		width: 500px;
-		max-width: 500px;
-		min-width: 500px;
 	}
 
 	.hide {

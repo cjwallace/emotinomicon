@@ -10,15 +10,22 @@
 	</style>
 </svelte:head>
 
-<div>
-	<Emotinomicon />
+<div class="wrapper">
+	<div class="content	">
+		<Emotinomicon />
+	</div>
 </div>
 
 <style>
-	div {
+	.wrapper {
+		padding: 10px;
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-start;
 		align-items: center;
+	}
+
+	.content {
+		max-width: 448px;
 	}
 </style>
