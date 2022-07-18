@@ -18,7 +18,6 @@
 	const fuse = new Fuse<Item>(list, { keys: ['name'] });
 
 	let pattern: string = '';
-	let input: HTMLInputElement;
 
 	$: results =
 		pattern === ''
@@ -29,13 +28,52 @@
 
 	// Combobox interactions
 
+	// enter to select
+	//
+	let input: HTMLInputElement;
+	let selectedIndex: number = -1;
+	let selectedEmotion: string = '';
+
+	const clamp = (n: number): number => {
+		if (n > results.length - 1) {
+			return 0;
+		} else if (n < 0) {
+			return results.length - 1;
+		} else {
+			return n;
+		}
+	};
+
 	const handleKeyDown = (e: KeyboardEvent) => {
 		switch (e.key) {
 			case 'Escape':
 				input.blur();
+				selectedIndex = -1;
 				break;
+
+			case 'ArrowDown':
+				selectedIndex = clamp(selectedIndex + 1);
+				break;
+
+			case 'ArrowUp':
+				selectedIndex = clamp(selectedIndex - 1);
+				break;
+
+			case 'Enter':
+				selectedEmotion = results[selectedIndex];
+				input.blur();
+				show = false;
 		}
 	};
+
+	let show = false;
+	$: if (pattern !== '') {
+		show = true;
+	} else if (selectedIndex !== -1) {
+		show = true;
+	} else {
+		show = false;
+	}
 </script>
 
 <div class="wrapper">
@@ -51,15 +89,19 @@
 		bind:this={input}
 		on:keydown={handleKeyDown}
 	/>
-	{#if pattern !== ''}
+	{#if show}
 		<di class="listbox">
 			<ul id="emotinomicon-listbox" role="listbox" aria-label="Emotions">
-				{#each results as emotion}
-					<li role="option" id="emotion-{emotion}">{emotion}</li>
+				{#each results as emotion, i}
+					<li role="option" id="emotion-{emotion}" class:selected={selectedIndex === i}>
+						{emotion}
+					</li>
 				{/each}
 			</ul>
 		</di>
 	{/if}
+
+	<h1>{selectedEmotion}</h1>
 </div>
 
 <style>
@@ -91,6 +133,10 @@
 	.listbox {
 		max-height: 30rem;
 		overflow: auto;
+	}
+
+	.selected {
+		background-color: aqua;
 	}
 
 	ul,
