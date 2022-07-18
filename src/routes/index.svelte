@@ -2,6 +2,14 @@
 	import Emotinomicon from '$lib/components/Emotinomicon.svelte';
 </script>
 
+<svelte:head>
+	<style>
+		html {
+			margin-left: calc(100vw - 100%);
+		}
+	</style>
+</svelte:head>
+
 <div>
 	<Emotinomicon />
 </div>
