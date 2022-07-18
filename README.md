@@ -11,6 +11,7 @@
 - list autocomplete autocomplete with automatic selection of top element (which will be found by fuzzy search with fuse.js)
   - possibly add inline autocomplete (complete the word in the text input area)?
 - if no matching selection, display a message rather than fully close popup
+- check guides and implement all keyboard controls
 
 ## Background:
 

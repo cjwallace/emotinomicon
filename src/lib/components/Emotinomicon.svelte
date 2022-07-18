@@ -75,9 +75,20 @@
 				break;
 
 			default:
+				// TODO: this is a hack to open it on typing alpha characters,
+				// but results in weird behaviour like opening on 'alt'
 				showList = true;
 				break;
 		}
+	};
+
+	const handleClick = (e: MouseEvent, i: number) => {
+		selectedIndex = i;
+		selectedEmotionName = results[selectedIndex];
+		pattern = selectedEmotionName;
+		input.blur();
+		showList = false;
+		selectedIndex = -1;
 	};
 
 	$: if (selectedIndex !== -1) {
@@ -109,7 +120,12 @@
 		<div class="listbox">
 			<ul id="emotinomicon-listbox" role="listbox" aria-label="Emotions">
 				{#each results as emotion, i}
-					<li role="option" id="emotion-{emotion}" class:selected={selectedIndex === i}>
+					<li
+						role="option"
+						id="emotion-{emotion}"
+						class:selected={selectedIndex === i}
+						on:click={(e) => handleClick(e, i)}
+					>
 						{emotion}
 					</li>
 				{/each}
@@ -172,7 +188,7 @@
 	}
 
 	.selected {
-		background-color: aqua;
+		background-color: lightgray;
 	}
 
 	ul,
@@ -181,5 +197,9 @@
 		text-align: center;
 		margin: 0;
 		padding: 0;
+	}
+
+	li:hover {
+		background-color: lightgray;
 	}
 </style>
