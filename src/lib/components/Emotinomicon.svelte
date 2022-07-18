@@ -103,8 +103,16 @@
 	}
 </script>
 
+<svelte:head>
+	<style>
+		body {
+			background-color: #e9efec;
+		}
+	</style>
+</svelte:head>
+
 <div class="wrapper">
-	<label for="emotinomicon-input">The Emotinomicon</label>
+	<label for="emotinomicon-input">T H E &nbsp;&nbsp; E M O T I N O M I C O N</label>
 	<input
 		id="emotionomicon-input"
 		type="text"
@@ -139,7 +147,20 @@
 </div>
 
 <style>
+	:root {
+		--black: #211e20;
+		--grey: #555568;
+		--highlight: #a0a08b;
+		--light: #e9efec;
+		/* --black: #0f0f1b;
+		--grey: #565a75;
+		--highlight: #c6b7be;
+		--light: #fafbf6; */
+	}
+
 	.wrapper {
+		color: var(--black);
+		background-color: var(--light);
 		padding-top: 10rem;
 		display: flex;
 		flex-direction: column;
@@ -166,8 +187,12 @@
 		font-family: monospace;
 		font-size: 1rem;
 		text-align: center;
-		border: 1px solid black;
-		border-radius: 4px;
+		border: 2px solid var(--black);
+		border-radius: 0px;
+	}
+
+	.entry:hover {
+		border-color: var(--highlight);
 	}
 
 	input,
@@ -178,17 +203,38 @@
 		font-family: monospace;
 		font-size: 2rem;
 		text-align: center;
-		border: 1px solid black;
-		border-radius: 4px;
+		border: 2px solid var(--black);
+		border-radius: 0px;
 	}
 
-	.listbox {
+	input[type='text'] {
+		background-color: var(--light);
+	}
+
+	input:hover {
+		border-color: var(--highlight);
+	}
+
+	input:focus {
+		outline: var(--highlight);
+		border-color: var(--highlight);
+	}
+
+	[role='listbox'] {
 		max-height: 30rem;
 		overflow: auto;
 	}
 
+	::-webkit-scrollbar-track {
+		background: var(--highlight);
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: var(--grey);
+	}
+
 	.selected {
-		background-color: lightgray;
+		background-color: var(--highlight);
 	}
 
 	ul,
@@ -200,6 +246,6 @@
 	}
 
 	li:hover {
-		background-color: lightgray;
+		background-color: var(--highlight);
 	}
 </style>
