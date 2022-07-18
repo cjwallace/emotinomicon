@@ -7,6 +7,7 @@
 
 	type Item = {
 		name: string;
+		description: string;
 	};
 
 	const list: Item[] = emotions;
@@ -19,10 +20,7 @@
 
 	let pattern: string = '';
 
-	$: results =
-		pattern === ''
-			? list.map((item) => item.name)
-			: fuse.search(pattern).map((result) => result.item.name);
+	$: results = pattern === '' ? items : fuse.search(pattern).map((result) => result.item.name);
 
 	// ARIA
 
@@ -32,7 +30,9 @@
 	//
 	let input: HTMLInputElement;
 	let selectedIndex: number = -1;
-	let selectedEmotion: string = '';
+	let selectedEmotionName: string = '';
+	let selectedEmotion: Item;
+	let showList = false;
 
 	const clamp = (n: number): number => {
 		if (n > results.length - 1) {
@@ -48,6 +48,7 @@
 		switch (e.key) {
 			case 'Escape':
 				input.blur();
+				showList = false;
 				selectedIndex = -1;
 				break;
 
@@ -60,24 +61,39 @@
 				break;
 
 			case 'Enter':
-				selectedEmotion = results[selectedIndex];
-				input.blur();
-				show = false;
+				if (selectedIndex !== -1) {
+					selectedEmotionName = results[selectedIndex];
+					pattern = selectedEmotionName;
+					input.blur();
+					showList = false;
+					selectedIndex = -1;
+				}
+				break;
+
+			case 'Tab':
+				showList = false;
+				break;
+
+			default:
+				showList = true;
+				break;
 		}
 	};
 
-	let show = false;
-	$: if (pattern !== '') {
-		show = true;
-	} else if (selectedIndex !== -1) {
-		show = true;
+	$: if (selectedIndex !== -1) {
+		showList = true;
 	} else {
-		show = false;
+		showList = false;
+	}
+
+	$: {
+		// TODO: filtering the list on each selection is inefficient, use a lookup
+		selectedEmotion = list.filter((item) => item.name === selectedEmotionName)[0];
 	}
 </script>
 
 <div class="wrapper">
-	<label for="emotinomicon-input">The Emotionomicon</label>
+	<label for="emotinomicon-input">The Emotinomicon</label>
 	<input
 		id="emotionomicon-input"
 		type="text"
@@ -89,8 +105,8 @@
 		bind:this={input}
 		on:keydown={handleKeyDown}
 	/>
-	{#if show}
-		<di class="listbox">
+	{#if showList}
+		<div class="listbox">
 			<ul id="emotinomicon-listbox" role="listbox" aria-label="Emotions">
 				{#each results as emotion, i}
 					<li role="option" id="emotion-{emotion}" class:selected={selectedIndex === i}>
@@ -98,10 +114,12 @@
 					</li>
 				{/each}
 			</ul>
-		</di>
+		</div>
 	{/if}
 
-	<h1>{selectedEmotion}</h1>
+	<div class="entry" class:hide={selectedEmotionName === '' || showList}>
+		<p>{selectedEmotion?.description ?? ''}</p>
+	</div>
 </div>
 
 <style>
@@ -111,6 +129,13 @@
 		flex-direction: column;
 		justify-content: flex-start;
 		align-items: center;
+		width: 500px;
+		max-width: 500px;
+		min-width: 500px;
+	}
+
+	.hide {
+		display: none;
 	}
 
 	label {
@@ -118,16 +143,27 @@
 		font-size: 1rem;
 	}
 
-	input,
-	.listbox {
-		padding: 10px;
+	.entry {
+		width: 100%;
 		margin: 10px;
+		padding: 10px;
 		font-family: monospace;
-		font-size: 2rem;
-		min-width: 400px;
+		font-size: 1rem;
+		text-align: center;
 		border: 1px solid black;
 		border-radius: 4px;
+	}
+
+	input,
+	.listbox {
+		width: 100%;
+		margin: 10px;
+		padding: 10px;
+		font-family: monospace;
+		font-size: 2rem;
 		text-align: center;
+		border: 1px solid black;
+		border-radius: 4px;
 	}
 
 	.listbox {
