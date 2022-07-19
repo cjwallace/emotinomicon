@@ -35,6 +35,17 @@
 	let selectedEmotion: Item;
 	let listboxState: ListboxState = 'closed';
 
+	function openListbox() {
+		listboxState = 'open';
+		input.ariaExpanded = 'true';
+	}
+
+	function closeListbox() {
+		listboxState = 'closed';
+		input.ariaExpanded = 'false';
+		input.blur();
+	}
+
 	const clamp = (n: number): number => {
 		if (n > results.length - 1) {
 			return 0;
@@ -46,22 +57,22 @@
 	};
 
 	function handleKeyDown(e: KeyboardEvent) {
-		// TODO: break these out into functions
 		switch (e.key) {
 			case 'Escape':
-				input.blur();
-				listboxState = 'closed';
+				closeListbox();
 				selectedIndex = -1;
 				break;
 
 			case 'ArrowDown':
 				e.preventDefault();
 				selectedIndex = clamp(selectedIndex + 1);
+				openListbox();
 				break;
 
 			case 'ArrowUp':
 				e.preventDefault();
 				selectedIndex = clamp(selectedIndex - 1);
+				openListbox();
 				break;
 
 			case 'Enter':
@@ -69,19 +80,19 @@
 					selectedEmotionName = results[selectedIndex];
 					pattern = selectedEmotionName;
 					input.blur();
-					listboxState = 'closed';
 					selectedIndex = -1;
+					closeListbox();
 				}
 				break;
 
 			case 'Tab':
-				listboxState = 'closed';
+				closeListbox();
 				break;
 
 			default:
 				// TODO: this is a hack to open it on typing alpha characters,
 				// but results in weird behaviour like opening on 'alt'
-				listboxState = 'open';
+				openListbox();
 				break;
 		}
 	}
