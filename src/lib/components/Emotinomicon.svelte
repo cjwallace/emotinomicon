@@ -90,8 +90,8 @@
 	function select() {
 		previousSelected = selected;
 		selected = document.getElementById(`emotion-${selectedIndex}`);
-		if (selected !== null) {
-			if (previousSelected !== null) {
+		if (selected) {
+			if (previousSelected) {
 				previousSelected.ariaSelected = 'false';
 			}
 			selected.ariaSelected = 'true';
@@ -114,7 +114,12 @@
 	function handleKeyDown(e: KeyboardEvent) {
 		switch (e.key) {
 			case 'Escape':
+				// TODO: perhaps selectedIndex should be reactive,
+				// it would tidy this up
 				selectedIndex = -1;
+				if (pattern === '') {
+					selectedEmotionName = '';
+				}
 				closeListbox();
 				unfocus();
 				break;
@@ -180,12 +185,6 @@
 		}
 	}
 
-	$: if (selectedIndex !== -1) {
-		listboxState = 'open';
-	} else {
-		listboxState = 'closed';
-	}
-
 	$: {
 		// TODO: filtering the list on each selection is inefficient, use a lookup
 		selectedEmotion = list.filter((item) => item.name === selectedEmotionName)[0];
@@ -240,6 +239,15 @@
 	<div class="entry" class:hide={selectedEmotionName === '' || listboxState === 'open'}>
 		<p>{selectedEmotion?.description ?? ''}</p>
 	</div>
+
+	{#if listboxState === 'closed' && selectedEmotionName === ''}
+		<p>Hello, human.</p>
+		<p>
+			I am a strange... book? Of sorts. If you tell me the name of the emotion you are experiencing,
+			I will tell you what I know of it.
+		</p>
+		<p>Perhaps this will help you understand yourself.</p>
+	{/if}
 </div>
 
 <style>
@@ -259,6 +267,14 @@
 		flex-direction: column;
 		justify-content: flex-start;
 		align-items: center;
+		font-family: monospace;
+	}
+
+	p {
+		align-self: flex-start;
+		font-size: 1rem;
+		margin: 10px;
+		padding: 10px;
 	}
 
 	.hide {
@@ -266,31 +282,24 @@
 	}
 
 	label {
-		font-family: monospace;
+		padding-top: 2rem;
 		font-size: 1rem;
 	}
 
+	input,
+	.listbox,
 	.entry {
 		width: 100%;
 		margin: 10px;
 		padding: 10px;
-		font-family: monospace;
-		font-size: 1rem;
+		font-size: 2rem;
 		text-align: center;
 		border: 2px solid var(--black);
 		border-radius: 0px;
 	}
 
-	input,
-	.listbox {
-		width: 100%;
-		margin: 10px;
-		padding: 10px;
-		font-family: monospace;
-		font-size: 2rem;
-		text-align: center;
-		border: 2px solid var(--black);
-		border-radius: 0px;
+	.entry {
+		font-size: 1rem;
 	}
 
 	input[type='text'] {
