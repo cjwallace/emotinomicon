@@ -26,13 +26,14 @@
 
 	// Combobox interactions
 
-	// enter to select
-	//
+	type ListboxState = 'open' | 'closed';
+
 	let input: HTMLInputElement;
+	let listbox: HTMLElement;
 	let selectedIndex: number = -1;
 	let selectedEmotionName: string = '';
 	let selectedEmotion: Item;
-	let showList = false;
+	let listboxState: ListboxState = 'closed';
 
 	const clamp = (n: number): number => {
 		if (n > results.length - 1) {
@@ -44,19 +45,22 @@
 		}
 	};
 
-	const handleKeyDown = (e: KeyboardEvent) => {
+	function handleKeyDown(e: KeyboardEvent) {
+		// TODO: break these out into functions
 		switch (e.key) {
 			case 'Escape':
 				input.blur();
-				showList = false;
+				listboxState = 'closed';
 				selectedIndex = -1;
 				break;
 
 			case 'ArrowDown':
+				e.preventDefault();
 				selectedIndex = clamp(selectedIndex + 1);
 				break;
 
 			case 'ArrowUp':
+				e.preventDefault();
 				selectedIndex = clamp(selectedIndex - 1);
 				break;
 
@@ -65,36 +69,36 @@
 					selectedEmotionName = results[selectedIndex];
 					pattern = selectedEmotionName;
 					input.blur();
-					showList = false;
+					listboxState = 'closed';
 					selectedIndex = -1;
 				}
 				break;
 
 			case 'Tab':
-				showList = false;
+				listboxState = 'closed';
 				break;
 
 			default:
 				// TODO: this is a hack to open it on typing alpha characters,
 				// but results in weird behaviour like opening on 'alt'
-				showList = true;
+				listboxState = 'open';
 				break;
 		}
-	};
+	}
 
-	const handleClick = (e: MouseEvent, i: number) => {
+	function handleClick(e: MouseEvent, i: number) {
 		selectedIndex = i;
 		selectedEmotionName = results[selectedIndex];
 		pattern = selectedEmotionName;
 		input.blur();
-		showList = false;
+		listboxState = 'closed';
 		selectedIndex = -1;
-	};
+	}
 
 	$: if (selectedIndex !== -1) {
-		showList = true;
+		listboxState = 'open';
 	} else {
-		showList = false;
+		listboxState = 'closed';
 	}
 
 	$: {
@@ -124,8 +128,8 @@
 		bind:this={input}
 		on:keydown={handleKeyDown}
 	/>
-	{#if showList}
-		<div class="listbox">
+	{#if listboxState === 'open'}
+		<div class="listbox" bind:this={listbox}>
 			<ul id="emotinomicon-listbox" role="listbox" aria-label="Emotions">
 				{#each results as emotion, i}
 					<li
@@ -141,7 +145,7 @@
 		</div>
 	{/if}
 
-	<div class="entry" class:hide={selectedEmotionName === '' || showList}>
+	<div class="entry" class:hide={selectedEmotionName === '' || listboxState === 'open'}>
 		<p>{selectedEmotion?.description ?? ''}</p>
 	</div>
 </div>
@@ -206,12 +210,19 @@
 	}
 
 	input:hover {
-		border-color: var(--highlight);
+		outline-offset: 2px;
+		outline: 2px solid var(--highlight);
 	}
 
 	input:focus {
-		outline: var(--highlight);
-		border-color: var(--highlight);
+		outline-offset: 2px;
+		outline: 2px solid var(--highlight);
+	}
+
+	.listbox:focus,
+	.listbox:hover {
+		outline-offset: 2px;
+		outline: 2px solid var(--highlight);
 	}
 
 	[role='listbox'] {

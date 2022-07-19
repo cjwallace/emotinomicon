@@ -12,6 +12,12 @@
   - possibly add inline autocomplete (complete the word in the text input area)?
 - if no matching selection, display a message rather than fully close popup
 - check guides and implement all keyboard controls
+- disable up/down keys on text input area (use left/right to refocus input)
+- enable scroll on up/down keys
+- aria options to address:
+  - aria-activedescendent
+  - aria-selected
+  - aria-expanded
 
 ## Background:
 
