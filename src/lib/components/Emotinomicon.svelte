@@ -30,6 +30,7 @@
 
 	let input: HTMLInputElement;
 	let listbox: HTMLElement;
+	let previousSelected: HTMLElement | null;
 	let selected: HTMLElement | null;
 	let selectedIndex: number = -1;
 	let selectedEmotionName: string = '';
@@ -86,20 +87,28 @@
 		);
 	}
 
+	function select() {
+		previousSelected = selected;
+		selected = document.getElementById(`emotion-${selectedIndex}`);
+		if (selected !== null) {
+			if (previousSelected !== null) {
+				previousSelected.ariaSelected = 'false';
+			}
+			selected.ariaSelected = 'true';
+			if (!isInView(selected)) {
+				selected.scrollIntoView({ block: 'nearest' });
+			}
+		}
+	}
+
 	function selectNext() {
 		selectedIndex = wrap(selectedIndex + 1);
-		selected = document.getElementById(`emotion-${selectedIndex}`);
-		if (selected !== null && !isInView(selected)) {
-			selected.scrollIntoView({ block: 'nearest' });
-		}
+		select();
 	}
 
 	function selectPrevious() {
 		selectedIndex = wrap(selectedIndex - 1);
-		selected = document.getElementById(`emotion-${selectedIndex}`);
-		if (selected !== null && !isInView(selected)) {
-			selected.scrollIntoView({ block: 'nearest' });
-		}
+		select();
 	}
 
 	function handleKeyDown(e: KeyboardEvent) {
@@ -122,7 +131,6 @@
 				selectPrevious();
 				openListbox();
 				focusListbox();
-
 				break;
 
 			case 'ArrowLeft':
@@ -218,6 +226,7 @@
 					<li
 						role="option"
 						id="emotion-{i}"
+						aria-selected="false"
 						class:selected={selectedIndex === i}
 						on:click={(e) => handleListClick(e, i)}
 					>
