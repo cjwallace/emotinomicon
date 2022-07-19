@@ -128,13 +128,19 @@
 		}
 	}
 
-	function handleClick(e: MouseEvent, i: number) {
+	function handleListClick(e: MouseEvent, i: number) {
 		selectedIndex = i;
 		selectedEmotionName = results[selectedIndex];
 		pattern = selectedEmotionName;
-		input.blur();
-		listboxState = 'closed';
 		selectedIndex = -1;
+		closeListbox();
+	}
+
+	function handleWindowClick(e: MouseEvent) {
+		if (e.target !== input) {
+			closeListbox();
+			unfocus();
+		}
 	}
 
 	$: if (selectedIndex !== -1) {
@@ -156,6 +162,8 @@
 		}
 	</style>
 </svelte:head>
+
+<svelte:window on:click={handleWindowClick} />
 
 <div class="wrapper">
 	<label for="emotinomicon-input">T H E &nbsp;&nbsp; E M O T I N O M I C O N</label>
@@ -180,7 +188,7 @@
 						role="option"
 						id="emotion-{emotion}"
 						class:selected={selectedIndex === i}
-						on:click={(e) => handleClick(e, i)}
+						on:click={(e) => handleListClick(e, i)}
 					>
 						{emotion}
 					</li>
