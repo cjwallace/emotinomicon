@@ -30,6 +30,7 @@
 
 	let input: HTMLInputElement;
 	let listbox: HTMLElement;
+	let selected: HTMLElement | null;
 	let selectedIndex: number = -1;
 	let selectedEmotionName: string = '';
 	let selectedEmotion: Item;
@@ -64,7 +65,7 @@
 		inputVisualFocus = false;
 	}
 
-	const clamp = (n: number): number => {
+	const wrap = (n: number): number => {
 		if (n > results.length - 1) {
 			return 0;
 		} else if (n < 0) {
@@ -73,6 +74,33 @@
 			return n;
 		}
 	};
+
+	function isInView(item: HTMLElement) {
+		const bounding = item.getBoundingClientRect();
+		console.log(item.offsetTop + item.clientHeight, listbox.scrollTop + listbox.clientHeight);
+		return (
+			// is not visually above visible scroll box
+			item.offsetTop + item.clientHeight > listbox.scrollTop + listbox.clientHeight &&
+			// is not visually below visible scroll box
+			item.offsetTop < listbox.scrollTop
+		);
+	}
+
+	function selectNext() {
+		selectedIndex = wrap(selectedIndex + 1);
+		selected = document.getElementById(`emotion-${selectedIndex}`);
+		if (selected !== null && !isInView(selected)) {
+			selected.scrollIntoView({ block: 'nearest' });
+		}
+	}
+
+	function selectPrevious() {
+		selectedIndex = wrap(selectedIndex - 1);
+		selected = document.getElementById(`emotion-${selectedIndex}`);
+		if (selected !== null && !isInView(selected)) {
+			selected.scrollIntoView({ block: 'nearest' });
+		}
+	}
 
 	function handleKeyDown(e: KeyboardEvent) {
 		switch (e.key) {
@@ -84,16 +112,17 @@
 
 			case 'ArrowDown':
 				e.preventDefault();
-				selectedIndex = clamp(selectedIndex + 1);
+				selectNext();
 				openListbox();
 				focusListbox();
 				break;
 
 			case 'ArrowUp':
 				e.preventDefault();
-				selectedIndex = clamp(selectedIndex - 1);
+				selectPrevious();
 				openListbox();
 				focusListbox();
+
 				break;
 
 			case 'ArrowLeft':
@@ -172,21 +201,23 @@
 		type="text"
 		role="combobox"
 		aria-autocomplete="list"
+		aria-activedescendant={selectedIndex !== -1 ? `emotion-${selectedIndex}` : null}
 		aria-expanded="false"
 		aria-controls="emotinomicon-listbox"
-		class={inputVisualFocus ? 'visual-focus' : ''}
+		class:visual-focus={inputVisualFocus}
 		bind:value={pattern}
 		bind:this={input}
 		on:keydown={handleKeyDown}
 		on:focus={focusInput}
 	/>
+
 	{#if listboxState === 'open'}
-		<div class="listbox" bind:this={listbox} class:visual-focus={listboxVisualFocus}>
-			<ul id="emotinomicon-listbox" role="listbox" aria-label="Emotions">
+		<div class="listbox" class:visual-focus={listboxVisualFocus}>
+			<ul id="emotinomicon-listbox" role="listbox" aria-label="Emotions" bind:this={listbox}>
 				{#each results as emotion, i}
 					<li
 						role="option"
-						id="emotion-{emotion}"
+						id="emotion-{i}"
 						class:selected={selectedIndex === i}
 						on:click={(e) => handleListClick(e, i)}
 					>
@@ -277,7 +308,7 @@
 		outline: 2px solid var(--grey);
 	}
 
-	[role='listbox'] {
+	ul[role='listbox'] {
 		max-height: 30rem;
 		overflow: auto;
 	}
