@@ -34,6 +34,8 @@
 	let selectedEmotionName: string = '';
 	let selectedEmotion: Item;
 	let listboxState: ListboxState = 'closed';
+	let inputVisualFocus = false;
+	let listboxVisualFocus = false;
 
 	function openListbox() {
 		listboxState = 'open';
@@ -42,8 +44,24 @@
 
 	function closeListbox() {
 		listboxState = 'closed';
+		listboxVisualFocus = false;
 		input.ariaExpanded = 'false';
 		input.blur();
+	}
+
+	function focusListbox() {
+		listboxVisualFocus = true;
+		inputVisualFocus = false;
+	}
+
+	function focusInput() {
+		listboxVisualFocus = false;
+		inputVisualFocus = true;
+	}
+
+	function unfocus() {
+		listboxVisualFocus = false;
+		inputVisualFocus = false;
 	}
 
 	const clamp = (n: number): number => {
@@ -59,40 +77,53 @@
 	function handleKeyDown(e: KeyboardEvent) {
 		switch (e.key) {
 			case 'Escape':
-				closeListbox();
 				selectedIndex = -1;
+				closeListbox();
+				unfocus();
 				break;
 
 			case 'ArrowDown':
 				e.preventDefault();
 				selectedIndex = clamp(selectedIndex + 1);
 				openListbox();
+				focusListbox();
 				break;
 
 			case 'ArrowUp':
 				e.preventDefault();
 				selectedIndex = clamp(selectedIndex - 1);
 				openListbox();
+				focusListbox();
+				break;
+
+			case 'ArrowLeft':
+				focusInput();
+				break;
+
+			case 'ArrowRight':
+				focusInput();
 				break;
 
 			case 'Enter':
 				if (selectedIndex !== -1) {
 					selectedEmotionName = results[selectedIndex];
 					pattern = selectedEmotionName;
-					input.blur();
 					selectedIndex = -1;
 					closeListbox();
+					unfocus();
 				}
 				break;
 
 			case 'Tab':
 				closeListbox();
+				unfocus();
 				break;
 
 			default:
 				// TODO: this is a hack to open it on typing alpha characters,
 				// but results in weird behaviour like opening on 'alt'
 				openListbox();
+				focusInput();
 				break;
 		}
 	}
@@ -135,12 +166,14 @@
 		aria-autocomplete="list"
 		aria-expanded="false"
 		aria-controls="emotinomicon-listbox"
+		class={inputVisualFocus ? 'visual-focus' : ''}
 		bind:value={pattern}
 		bind:this={input}
 		on:keydown={handleKeyDown}
+		on:focus={focusInput}
 	/>
 	{#if listboxState === 'open'}
-		<div class="listbox" bind:this={listbox}>
+		<div class="listbox" bind:this={listbox} class:visual-focus={listboxVisualFocus}>
 			<ul id="emotinomicon-listbox" role="listbox" aria-label="Emotions">
 				{#each results as emotion, i}
 					<li
@@ -200,10 +233,6 @@
 		border-radius: 0px;
 	}
 
-	.entry:hover {
-		border-color: var(--highlight);
-	}
-
 	input,
 	.listbox {
 		width: 100%;
@@ -220,20 +249,24 @@
 		background-color: var(--light);
 	}
 
+	input:focus {
+		outline: none;
+	}
+
 	input:hover {
 		outline-offset: 2px;
-		outline: 2px solid var(--highlight);
+		outline: 2px solid var(--grey);
 	}
 
-	input:focus {
+	input.visual-focus {
 		outline-offset: 2px;
-		outline: 2px solid var(--highlight);
+		outline: 2px solid var(--grey);
 	}
 
-	.listbox:focus,
+	.listbox.visual-focus,
 	.listbox:hover {
 		outline-offset: 2px;
-		outline: 2px solid var(--highlight);
+		outline: 2px solid var(--grey);
 	}
 
 	[role='listbox'] {
