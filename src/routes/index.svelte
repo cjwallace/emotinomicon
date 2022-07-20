@@ -17,6 +17,10 @@
 </div>
 
 <style>
+	* {
+		box-sizing: border-box;
+	}
+
 	.wrapper {
 		padding: 10px;
 		display: flex;
@@ -26,6 +30,7 @@
 	}
 
 	.content {
+		width: 100%;
 		max-width: 448px;
 	}
 </style>

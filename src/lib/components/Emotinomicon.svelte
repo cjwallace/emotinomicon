@@ -202,7 +202,9 @@
 <svelte:window on:click={handleWindowClick} />
 
 <div class="wrapper">
-	<label for="emotinomicon-input">T H E &nbsp;&nbsp; E M O T I N O M I C O N</label>
+	<label for="emotinomicon-input"
+		><span>T H E</span> &nbsp; <span>E M O T I N O M I C O N</span></label
+	>
 	<input
 		id="emotionomicon-input"
 		type="text"
@@ -241,12 +243,14 @@
 	</div>
 
 	{#if listboxState === 'closed' && selectedEmotionName === ''}
-		<p>Hello, human.</p>
-		<p>
-			I am a strange... book? Of sorts. If you tell me the name of the emotion you are experiencing,
-			I will tell you what I know of it.
-		</p>
-		<p>Perhaps this will help you understand yourself.</p>
+		<div class="intro">
+			<p>Hello, human.</p>
+			<p>
+				I am a strange... book? Of sorts. If you tell me the name of the emotion you are
+				experiencing, I will tell you what I know of it.
+			</p>
+			<p>Perhaps this will help you understand yourself.</p>
+		</div>
 	{/if}
 </div>
 
@@ -258,8 +262,13 @@
 		--light: #e9efec;
 	}
 
+	* {
+		box-sizing: border-box;
+	}
+
 	.wrapper {
-		padding: 10px;
+		margin: auto;
+		padding: 1rem;
 		color: var(--black);
 		background-color: var(--light);
 		padding-top: 10rem;
@@ -270,32 +279,43 @@
 		font-family: monospace;
 	}
 
-	p {
+	.intro {
 		align-self: flex-start;
 		font-size: 1rem;
-		margin: 10px;
 		padding: 10px;
 	}
 
-	.hide {
-		display: none;
+	span {
+		display: inline-block;
 	}
 
 	label {
+		text-align: center;
 		padding-top: 2rem;
 		font-size: 1rem;
+		padding: 10px;
 	}
 
 	input,
 	.listbox,
 	.entry {
 		width: 100%;
-		margin: 10px;
+		margin-top: 10px;
+		margin-bottom: 10px;
 		padding: 10px;
 		font-size: 2rem;
 		text-align: center;
+		font-family: inherit;
 		border: 2px solid var(--black);
 		border-radius: 0px;
+	}
+
+	.listbox {
+		font-size: 1.5rem;
+	}
+
+	.hide {
+		display: none;
 	}
 
 	.entry {
@@ -310,18 +330,10 @@
 		outline: none;
 	}
 
-	input:hover {
-		outline-offset: 2px;
-		outline: 2px solid var(--grey);
-	}
-
-	input.visual-focus {
-		outline-offset: 2px;
-		outline: 2px solid var(--grey);
-	}
-
-	.listbox.visual-focus,
-	.listbox:hover {
+	input:hover,
+	input.visual-focus,
+	.listbox:hover,
+	.listbox.visual-focus {
 		outline-offset: 2px;
 		outline: 2px solid var(--grey);
 	}
@@ -329,14 +341,6 @@
 	ul[role='listbox'] {
 		max-height: 30rem;
 		overflow: auto;
-	}
-
-	::-webkit-scrollbar-track {
-		background: var(--highlight);
-	}
-
-	::-webkit-scrollbar-thumb {
-		background: var(--grey);
 	}
 
 	.selected {
@@ -353,5 +357,18 @@
 
 	li:hover {
 		background-color: var(--highlight);
+	}
+
+	ul::-webkit-scrollbar {
+		background: var(--light);
+		border-color: var(--highlight);
+	}
+
+	ul::-webkit-scrollbar-track {
+		background: var(--light);
+	}
+
+	ul::-webkit-scrollbar-thumb {
+		background: var(--grey);
 	}
 </style>
