@@ -213,6 +213,7 @@
 		aria-activedescendant={selectedIndex !== -1 ? `emotion-${selectedIndex}` : null}
 		aria-expanded="false"
 		aria-controls="emotinomicon-listbox"
+		placeholder="what do you feel?"
 		class:visual-focus={inputVisualFocus}
 		bind:value={pattern}
 		bind:this={input}
@@ -353,6 +354,11 @@
 
 	input[type='text'] {
 		background-color: var(--light);
+	}
+
+	input::placeholder,
+	input::ms-input-placeholder {
+		color: var(--highlight);
 	}
 
 	input:focus {
