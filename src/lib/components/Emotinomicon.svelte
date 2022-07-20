@@ -2,21 +2,17 @@
 	import Fuse from 'fuse.js';
 
 	import emotions from '$lib/emotions';
+	import type { Emotion } from '$lib/emotions';
 
 	// List
 
-	type Item = {
-		name: string;
-		description: string;
-	};
-
-	const list: Item[] = emotions;
+	const list: Emotion[] = emotions;
 
 	const items = list.map((item) => item.name);
 
 	// Fuzzy search
 
-	const fuse = new Fuse<Item>(list, { keys: ['name'] });
+	const fuse = new Fuse<Emotion>(list, { keys: ['name'] });
 
 	let pattern: string = '';
 
@@ -34,7 +30,7 @@
 	let selected: HTMLElement | null;
 	let selectedIndex: number = -1;
 	let selectedEmotionName: string = '';
-	let selectedEmotion: Item;
+	let selectedEmotion: Emotion;
 	let listboxState: ListboxState = 'closed';
 	let inputVisualFocus = false;
 	let listboxVisualFocus = false;
@@ -78,7 +74,6 @@
 
 	function isInView(item: HTMLElement) {
 		const bounding = item.getBoundingClientRect();
-		console.log(item.offsetTop + item.clientHeight, listbox.scrollTop + listbox.clientHeight);
 		return (
 			// is not visually above visible scroll box
 			item.offsetTop + item.clientHeight > listbox.scrollTop + listbox.clientHeight &&
@@ -185,6 +180,11 @@
 		}
 	}
 
+	function handleButtonClick(e: MouseEvent, closeEmotion: string) {
+		pattern = closeEmotion;
+		selectedEmotionName = closeEmotion;
+	}
+
 	$: {
 		// TODO: filtering the list on each selection is inefficient, use a lookup
 		selectedEmotion = list.filter((item) => item.name === selectedEmotionName)[0];
@@ -242,14 +242,37 @@
 		<p>{selectedEmotion?.description ?? ''}</p>
 	</div>
 
+	<div class="entry" class:hide={selectedEmotionName === '' || listboxState === 'open'}>
+		<p>
+			Perhaps that is not exactly what you are feeling. My navigation systems detect the following
+			nearby emotional states.
+		</p>
+		<ul>
+			{#each selectedEmotion?.closeEmotions ?? [] as closeEmotion}
+				<li>
+					<button
+						aria-controls="emotionomicon-input"
+						on:click={(e) => handleButtonClick(e, closeEmotion)}>{closeEmotion}</button
+					>
+				</li>
+			{/each}
+		</ul>
+	</div>
+
 	{#if listboxState === 'closed' && selectedEmotionName === ''}
 		<div class="intro">
 			<p>Hello, human.</p>
+			<p>I am a strange... book?</p>
+			<p>Of sorts.</p>
 			<p>
-				I am a strange... book? Of sorts. If you tell me the name of the emotion you are
-				experiencing, I will tell you what I know of it.
+				If you tell me the name of the emotion you are experiencing, I will tell you what I
+				understand it to mean. My index currently includes <b>{list.length}</b> emotional states.
 			</p>
-			<p>Perhaps this will help you understand yourself.</p>
+			<p>
+				Naming things is difficult for humans, so I will also tell you the names of some emotions
+				that are nearby in my high-dimensional vector space.
+			</p>
+			<p>I hope you find this useful.</p>
 		</div>
 	{/if}
 </div>
@@ -322,6 +345,12 @@
 		font-size: 1rem;
 	}
 
+	p {
+		margin: 0;
+		padding-top: 1rem;
+		padding-bottom: 1rem;
+	}
+
 	input[type='text'] {
 		background-color: var(--light);
 	}
@@ -355,13 +384,28 @@
 		padding: 0;
 	}
 
-	li:hover {
+	.listbox li:hover {
 		background-color: var(--highlight);
+	}
+
+	button {
+		font-family: monospace;
+		font-size: 1rem;
+		border: 1px solid var(--grey);
+		background-color: var(--light);
+		width: 50%;
+		padding: 2px;
+		margin: 0.5rem;
+	}
+
+	button:focus,
+	button:hover {
+		outline-offset: 2px;
+		outline: 2px solid var(--grey);
 	}
 
 	ul::-webkit-scrollbar {
 		background: var(--light);
-		border-color: var(--highlight);
 	}
 
 	ul::-webkit-scrollbar-track {
