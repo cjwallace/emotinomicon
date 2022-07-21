@@ -1,35 +1,30 @@
-<script lang="ts" context="module">
-	export type ListboxState = 'open' | 'closed';
-</script>
-
 <script lang="ts">
 	import Fuse from 'fuse.js';
 
 	export let ariaLabel: string;
 	export let list: Array<string>;
-
-	const fuse = new Fuse<string>(list);
 	export let pattern: string = '';
-
-	$: results = pattern === '' ? list : fuse.search(pattern).map((result) => result.item);
+	export let selectedItem: string = '';
+	export let comboboxActive = false;
 
 	let input: HTMLInputElement;
 	let listbox: HTMLElement;
 	let previousSelected: HTMLElement | null;
 	let selected: HTMLElement | null;
 	let selectedIndex: number = -1;
-	export let selectedItem: string = '';
-	export let listboxState: ListboxState = 'closed';
 	let inputVisualFocus = false;
 	let listboxVisualFocus = false;
 
+	const fuse = new Fuse<string>(list);
+	$: results = pattern === '' ? list : fuse.search(pattern).map((result) => result.item);
+
 	function openListbox() {
-		listboxState = 'open';
+		comboboxActive = true;
 		input.ariaExpanded = 'true';
 	}
 
 	function closeListbox() {
-		listboxState = 'closed';
+		comboboxActive = false;
 		listboxVisualFocus = false;
 		input.ariaExpanded = 'false';
 		input.blur();
@@ -188,7 +183,7 @@
 	on:focus={focusInput}
 />
 
-{#if listboxState === 'open'}
+{#if comboboxActive}
 	<div class="listbox" class:visual-focus={listboxVisualFocus}>
 		<ul id="combobox-listbox" role="listbox" aria-label={ariaLabel} bind:this={listbox}>
 			{#each results as emotion, i}

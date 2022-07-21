@@ -4,11 +4,11 @@
 	import emotions from '$lib/emotions';
 
 	import Intro from './Intro.svelte';
-	import ComboBox, { type ListboxState } from './ComboBox.svelte';
+	import ComboBox from './ComboBox.svelte';
 	import Entry from './Entry.svelte';
 
 	let selectedEmotionName: string;
-	let listboxState: ListboxState;
+	let comboboxActive: boolean;
 	let pattern: string;
 
 	const emotionNames = emotions.map((emotion) => emotion.name);
@@ -37,15 +37,15 @@
 		ariaLabel="Emotions"
 		list={emotionNames}
 		bind:selectedItem={selectedEmotionName}
-		bind:listboxState
+		bind:comboboxActive
 		bind:pattern
 	/>
 
-	{#if !(selectedEmotionName === '' || listboxState === 'open')}
+	{#if !(selectedEmotionName === '' || comboboxActive)}
 		<Entry emotion={selectedEmotion} handleClick={handleButtonClick} />
 	{/if}
 
-	{#if listboxState === 'closed' && selectedEmotionName === ''}
+	{#if !comboboxActive && selectedEmotionName === ''}
 		<Intro nEmotions={emotions.length} />
 	{/if}
 </div>
