@@ -4,6 +4,9 @@
 	import emotions from '$lib/emotions';
 	import type { Emotion } from '$lib/emotions';
 
+	import Intro from './Intro.svelte';
+	import Entry from './Entry.svelte';
+
 	// List
 
 	const list: Emotion[] = emotions;
@@ -193,6 +196,9 @@
 
 <svelte:head>
 	<style>
+		* {
+			box-sizing: border-box;
+		}
 		body {
 			background-color: #e9efec;
 		}
@@ -239,42 +245,12 @@
 		</div>
 	{/if}
 
-	<div class="entry" class:hide={selectedEmotionName === '' || listboxState === 'open'}>
-		<p>{selectedEmotion?.description ?? ''}</p>
-	</div>
-
-	<div class="entry" class:hide={selectedEmotionName === '' || listboxState === 'open'}>
-		<p>
-			Perhaps that is not exactly what you are feeling. My navigation systems detect the following
-			nearby emotional states.
-		</p>
-		<ul>
-			{#each selectedEmotion?.closeEmotions ?? [] as closeEmotion}
-				<li>
-					<button
-						aria-controls="emotionomicon-input"
-						on:click={(e) => handleButtonClick(e, closeEmotion)}>{closeEmotion}</button
-					>
-				</li>
-			{/each}
-		</ul>
-	</div>
+	{#if !(selectedEmotionName === '' || listboxState === 'open')}
+		<Entry emotion={selectedEmotion} handleClick={handleButtonClick} />
+	{/if}
 
 	{#if listboxState === 'closed' && selectedEmotionName === ''}
-		<div class="intro">
-			<p>Hello, human.</p>
-			<p>I am a strange... book?</p>
-			<p>Of sorts.</p>
-			<p>
-				If you tell me the name of the emotion you are experiencing, I will tell you what I
-				understand it to mean. My index currently includes <b>{list.length}</b> emotional states.
-			</p>
-			<p>
-				Naming things is difficult for humans, so I will also tell you the names of some emotions
-				that are nearby in my high-dimensional vector space.
-			</p>
-			<p>I hope you find this useful.</p>
-		</div>
+		<Intro nEmotions={list.length} />
 	{/if}
 </div>
 
@@ -284,10 +260,6 @@
 		--grey: #555568;
 		--highlight: #a0a08b;
 		--light: #e9efec;
-	}
-
-	* {
-		box-sizing: border-box;
 	}
 
 	.wrapper {
@@ -303,12 +275,6 @@
 		font-family: monospace;
 	}
 
-	.intro {
-		align-self: flex-start;
-		font-size: 1rem;
-		padding: 10px;
-	}
-
 	span {
 		display: inline-block;
 	}
@@ -321,8 +287,7 @@
 	}
 
 	input,
-	.listbox,
-	.entry {
+	.listbox {
 		width: 100%;
 		margin-top: 10px;
 		margin-bottom: 10px;
@@ -336,20 +301,6 @@
 
 	.listbox {
 		font-size: 1.5rem;
-	}
-
-	.hide {
-		display: none;
-	}
-
-	.entry {
-		font-size: 1rem;
-	}
-
-	p {
-		margin: 0;
-		padding-top: 1rem;
-		padding-bottom: 1rem;
 	}
 
 	input[type='text'] {
@@ -392,22 +343,6 @@
 
 	.listbox li:hover {
 		background-color: var(--highlight);
-	}
-
-	button {
-		font-family: monospace;
-		font-size: 1rem;
-		border: 1px solid var(--grey);
-		background-color: var(--light);
-		width: 50%;
-		padding: 2px;
-		margin: 0.5rem;
-	}
-
-	button:focus,
-	button:hover {
-		outline-offset: 2px;
-		outline: 2px solid var(--grey);
 	}
 
 	ul::-webkit-scrollbar {

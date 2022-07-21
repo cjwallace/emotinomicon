@@ -17,10 +17,6 @@
 </div>
 
 <style>
-	* {
-		box-sizing: border-box;
-	}
-
 	.wrapper {
 		padding: 10px;
 		display: flex;
