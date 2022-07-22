@@ -6,6 +6,7 @@
 	import Intro from './Intro.svelte';
 	import ComboBox from './ComboBox.svelte';
 	import Entry from './Entry.svelte';
+	import Starfield from './Starfield.svelte';
 
 	let selectedEmotionName: string;
 	let comboboxActive: boolean;
@@ -33,6 +34,7 @@
 </svelte:head>
 
 <div class="wrapper">
+	<Starfield nStars={emotions.length} />
 	<ComboBox
 		ariaLabel="Emotions"
 		list={emotionNames}
