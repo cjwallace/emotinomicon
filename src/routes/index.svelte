@@ -19,6 +19,7 @@
 <style>
 	.wrapper {
 		padding: 10px;
+		padding-top: 10rem;
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-start;
@@ -28,5 +29,11 @@
 	.content {
 		width: 100%;
 		max-width: 448px;
+	}
+
+	@media (max-width: 448px) {
+		.wrapper {
+			padding-top: 2rem;
+		}
 	}
 </style>

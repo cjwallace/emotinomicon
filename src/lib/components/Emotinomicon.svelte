@@ -65,7 +65,6 @@
 		padding: 1rem;
 		color: var(--black);
 		background-color: var(--light);
-		padding-top: 10rem;
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-start;
