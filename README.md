@@ -1,4 +1,10 @@
-# emotinomicon 
+# THE EMOTINOMICON
+
+THE EMOTINOMICON is an app for internal navigation.
+
+You can play with it [here](https://standard.dev/emotinomicon).
+
+This README, like the app, is a work in progress.
 
 ### TODO:
 
