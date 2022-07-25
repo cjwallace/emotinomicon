@@ -41,6 +41,7 @@
 		bind:selectedItem={selectedEmotionName}
 		bind:comboboxActive
 		bind:pattern
+		placeholder="What do you feel?"
 	/>
 
 	{#if !(selectedEmotionName === '' || comboboxActive)}

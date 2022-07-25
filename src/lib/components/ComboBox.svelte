@@ -6,6 +6,7 @@
 	export let pattern: string = '';
 	export let selectedItem: string = '';
 	export let comboboxActive = false;
+	export let placeholder: string = '';
 
 	let input: HTMLInputElement;
 	let listbox: HTMLElement;
@@ -175,7 +176,7 @@
 	aria-activedescendant={selectedIndex !== -1 ? `emotion-${selectedIndex}` : null}
 	aria-expanded="false"
 	aria-controls="combobox-listbox"
-	placeholder="what do you feel?"
+	{placeholder}
 	class:visual-focus={inputVisualFocus}
 	bind:value={pattern}
 	bind:this={input}
