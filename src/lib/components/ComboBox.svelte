@@ -163,11 +163,17 @@
 			unfocus();
 		}
 	}
+
+	function handleLabelClick(e: MouseEvent){
+		closeListbox();
+		selectedItem = "";
+		pattern = "";
+	}
 </script>
 
 <svelte:window on:click={handleWindowClick} />
 
-<label for="combobox-input"><span>T H E</span> &nbsp; <span>E M O T I N O M I C O N</span></label>
+<label for="combobox-input" on:click={handleLabelClick}><span>T H E</span> &nbsp; <span>E M O T I N O M I C O N</span></label>
 <input
 	id="combobox-input"
 	type="text"
@@ -212,6 +218,7 @@
 		padding-top: 2rem;
 		font-size: 1rem;
 		padding: 10px;
+		cursor: pointer;
 	}
 
 	input,
