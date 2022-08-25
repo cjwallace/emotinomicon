@@ -1,6 +1,6 @@
 {
 	"name": "@standard-dev/emotinomicon",
-	"version": "0.0.7",
+	"version": "0.0.8",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
