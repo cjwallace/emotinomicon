@@ -1,6 +1,4 @@
 <script lang="ts">
-	import Fuse from 'fuse.js';
-
 	import emotions from '$lib/emotions';
 
 	import Intro from './Intro.svelte';

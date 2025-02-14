@@ -3,16 +3,16 @@
 
 	export let ariaLabel: string;
 	export let list: Array<string>;
-	export let pattern: string = '';
-	export let selectedItem: string = '';
+	export let pattern = '';
+	export let selectedItem = '';
 	export let comboboxActive = false;
-	export let placeholder: string = '';
+	export let placeholder = '';
 
 	let input: HTMLInputElement;
 	let listbox: HTMLElement;
 	let previousSelected: HTMLElement | null;
 	let selected: HTMLElement | null;
-	let selectedIndex: number = -1;
+	let selectedIndex = -1;
 	let inputVisualFocus = false;
 	let listboxVisualFocus = false;
 
@@ -57,7 +57,6 @@
 	};
 
 	function isInView(item: HTMLElement) {
-		const bounding = item.getBoundingClientRect();
 		return (
 			// is not visually above visible scroll box
 			item.offsetTop + item.clientHeight > listbox.scrollTop + listbox.clientHeight &&
@@ -149,7 +148,7 @@
 		}
 	}
 
-	function handleListClick(e: MouseEvent, i: number) {
+	function handleListClick(e: MouseEvent | KeyboardEvent, i: number) {
 		selectedIndex = i;
 		selectedItem = results[selectedIndex];
 		pattern = selectedItem;
@@ -164,16 +163,25 @@
 		}
 	}
 
-	function handleLabelClick(e: MouseEvent){
+	function handleLabelClick() {
 		closeListbox();
-		selectedItem = "";
-		pattern = "";
+		selectedItem = '';
+		pattern = '';
 	}
 </script>
 
 <svelte:window on:click={handleWindowClick} />
 
-<label for="combobox-input" on:click={handleLabelClick}><span>T H E</span> &nbsp; <span>E M O T I N O M I C O N</span></label>
+<label
+	for="combobox-input"
+	on:click={handleLabelClick}
+	on:keydown={(e) => {
+		if (e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault();
+			handleLabelClick();
+		}
+	}}><span>T H E</span> &nbsp; <span>E M O T I N O M I C O N</span></label
+>
 <input
 	id="combobox-input"
 	type="text"
@@ -200,6 +208,12 @@
 					aria-selected="false"
 					class:selected={selectedIndex === i}
 					on:click={(e) => handleListClick(e, i)}
+					on:keydown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.preventDefault();
+							handleListClick(e, i);
+						}
+					}}
 				>
 					{emotion}
 				</li>
@@ -227,7 +241,7 @@
 		margin-top: 10px;
 		margin-bottom: 10px;
 		padding: 10px;
-		font-size: 2rem;
+		font-size: 1rem;
 		text-align: center;
 		font-family: inherit;
 		border: 2px solid var(--black);
