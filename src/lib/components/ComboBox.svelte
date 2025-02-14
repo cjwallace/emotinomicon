@@ -172,15 +172,16 @@
 
 <svelte:window on:click={handleWindowClick} />
 
-<label
-	for="combobox-input"
-	on:click={handleLabelClick}
-	on:keydown={(e) => {
-		if (e.key === 'Enter' || e.key === ' ') {
-			e.preventDefault();
-			handleLabelClick();
-		}
-	}}><span>T H E</span> &nbsp; <span>E M O T I N O M I C O N</span></label
+<label for="combobox-input"
+	><button
+		on:click={handleLabelClick}
+		on:keydown={(e) => {
+			if (e.key === 'Enter' || e.key === ' ') {
+				e.preventDefault();
+				handleLabelClick();
+			}
+		}}><span>T H E</span> &nbsp; <span>E M O T I N O M I C O N</span></button
+	></label
 >
 <input
 	id="combobox-input"
@@ -232,6 +233,15 @@
 		padding-top: 2rem;
 		font-size: 1rem;
 		padding: 10px;
+		cursor: pointer;
+	}
+
+	button {
+		background: none;
+		color: inherit;
+		border: none;
+		padding: 0;
+		font: inherit;
 		cursor: pointer;
 	}
 
